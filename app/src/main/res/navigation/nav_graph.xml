@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".presentation.activities.WarehouseControlActivity"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/menuFragment">
+
+    <fragment
+        android:id="@+id/menuFragment"
+        android:name="org.jw.warehousecontrol.presentation.fragments.MenuFragment"
+        android:label="Almoxarifado"
+        tools:layout="@layout/fragment_menu" >
+        <action
+            android:id="@+id/goToListFragment"
+            app:destination="@id/listFragment" />
+        <action
+            android:id="@+id/goToItemRegisterFragment"
+            app:destination="@id/itemRegisterFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/listFragment"
+        android:name="org.jw.warehousecontrol.presentation.fragments.ListFragment"
+        android:label="Controle de almoxarifado"
+        tools:layout="@layout/fragment_list" >
+        <action
+            android:id="@+id/goToLendFragment"
+            app:destination="@id/lendFragment" />
+        <action
+            android:id="@+id/goToItemDetailsFragment"
+            app:destination="@id/itemDetailFragment" />
+        <action
+            android:id="@+id/goToVolunteerDetailsFragment"
+            app:destination="@id/volunteerDetailsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/itemDetailFragment"
+        android:name="org.jw.warehousecontrol.presentation.fragments.ItemDetailFragment"
+        android:label="Detalhes do item"
+        tools:layout="@layout/fragment_item_detail" >
+        <argument
+            android:name="volunteers"
+            app:argType="org.jw.warehousecontrol.presentation.model.GenericListItem[]"/>
+        <argument
+            android:name="detailItem"
+            app:argType="org.jw.warehousecontrol.presentation.model.ItemDetailModel"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/itemRegisterFragment"
+        android:name="org.jw.warehousecontrol.presentation.fragments.ItemRegisterFragment"
+        android:label="Adicionar novo item"
+        tools:layout="@layout/fragment_item_register" />
+
+    <fragment
+        android:id="@+id/lendFragment"
+        android:name="org.jw.warehousecontrol.presentation.fragments.LendFragment"
+        android:label="Retirada de item"
+        tools:layout="@layout/fragment_lend" >
+        <action
+            android:id="@+id/goToItemRegisterFragment"
+            app:destination="@id/itemRegisterFragment" />
+        <action
+            android:id="@+id/goToVolunteerRegisterFragment"
+            app:destination="@id/volunteerRegisterFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/volunteerDetailsFragment"
+        android:name="org.jw.warehousecontrol.presentation.fragments.VolunteerDetailsFragment"
+        android:label="Detalhes do voluntário"
+        tools:layout="@layout/fragment_volunteer_details" >
+        <argument
+            android:name="items"
+            app:argType="org.jw.warehousecontrol.presentation.model.GenericListItem[]"/>
+        <argument
+            android:name="detailVolunteer"
+            app:argType="org.jw.warehousecontrol.presentation.model.VolunteerDetailModel"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/volunteerRegisterFragment"
+        android:name="org.jw.warehousecontrol.presentation.fragments.VolunteerRegisterFragment"
+        android:label="Registro de funcionário"
+        tools:layout="@layout/fragment_volunteer_register" />
+
+</navigation>

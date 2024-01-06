@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".presentation.fragments.VolunteerDetailsFragment">
+
+    <LinearLayout
+        android:id="@+id/volunteerInformation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/warehouse_control_blue_light"
+        android:padding="@dimen/dimen_16dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/volunteerName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/dimen_24sp"
+            android:textStyle="bold"
+            android:textColor="@color/warehouse_control_gray_dark"
+            tools:text="Fulano de Tal"/>
+
+        <TextView
+            android:id="@+id/volunteerBuilder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/dimen_18sp"
+            android:paddingVertical="@dimen/dimen_4dp"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:textColor="@color/warehouse_control_gray_dark"
+            tools:text="Builder: 00000"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@id/volunteerInformation"
+        android:padding="@dimen/dimen_16dp">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/warehouse_control_borrow_item_hint"
+            app:startIconDrawable="@drawable/warehouse_control_icon_tools"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+
+            <AutoCompleteTextView
+                android:id="@+id/searchEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_24dp"
+            android:textSize="@dimen/dimen_18sp"
+            android:textStyle="bold"
+            android:textColor="@color/warehouse_control_blue"
+            android:text="@string/warehouse_control_borrowed_items"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_8dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/warehouse_control_return_list_item"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

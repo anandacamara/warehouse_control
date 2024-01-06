@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_marginHorizontal="4dp"
+    android:layout_marginVertical="8dp"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/itemName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:textSize="18sp"
+            android:layout_centerInParent="true"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@id/returnIcon"
+            android:textColor="@color/warehouse_control_gray_dark"
+            tools:text="Martelo"/>
+
+        <ImageView
+            android:id="@+id/returnIcon"
+            android:padding="8dp"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/warehouse_control_icon_return"/>
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

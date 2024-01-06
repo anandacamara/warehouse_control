@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="warehouse_control_blue">#4a6da7</color>
+    <color name="warehouse_control_blue_light">#e7f3fa</color>
+    <color name="warehouse_control_white">#FFFFFFFF</color>
+    <color name="warehouse_control_blue_light_transparent">#80e7f3fa</color>
+    <color name="warehouse_control_gray_dark">#0F0F0F</color>
+    <color name="warehouse_control_gray_dark_transparent">#800F0F0F</color>
+    <color name="warehouse_control_gray_divider">#cdcdcd</color>
+</resources>

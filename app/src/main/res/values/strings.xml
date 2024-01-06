@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">Almoxarifado</string>
+
+    <string name="warehouse_control_toolbar_title">Controle de Almoxarifado</string>
+    <string name="warehouse_control_item_hint">Pesquisar por item</string>
+    <string name="warehouse_control_volunteer_hint">Pesquisar por voluntário</string>
+    <string name="warehouse_control_new_land">Nova retirada</string>
+    <string name="warehouse_control_items_label">Itens</string>
+    <string name="warehouse_control_volunteers_label">Voluntários</string>
+    <string name="warehouse_control_error_load_list_message">Ocorreu um erro ao carregar a lista compartilhada.\nExibindo a lista salva no telefone.</string>
+    <string name="warehouse_control_borrow_label">Emprestar</string>
+    <string name="warehouse_control_using_item_for_label">Este item está sendo utilizado por:</string>
+    <string name="warehouse_control_confirmation_return_message">Tem certeza que deseja devolver este item?</string>
+    <string name="warehouse_control_choose_an_option_message">Escolha uma opção</string>
+    <string name="warehouse_control_take_from_gallery_message">Escolher uma foto existente</string>
+    <string name="warehouse_control_take_a_new_picture_message">Tirar uma nova foto</string>
+    <string name="warehouse_control_no_message">Não</string>
+    <string name="warehouse_control_yes_message">Sim</string>
+    <string name="warehouse_control_borrow_item_hint">Retirar item</string>
+    <string name="warehouse_control_borrowed_items">Itens emprestados:</string>
+    <string name="warehouse_control_volunteer_label">Voluntário</string>
+    <string name="warehouse_control_select_items_hint">Itens</string>
+    <string name="warehouse_control_save_button_label">Salvar</string>
+    <string name="warehouse_control_item_name">Nome do item</string>
+    <string name="warehouse_control_description_hint">Descrição</string>
+    <string name="warehouse_needed_network_availability_message">É necessário estar conectado á internet para cadastrar novos items</string>
+    <string name="warehouse_control_confirmation_sync_title">Tem certeza que deseja sincronizar os bancos de dados?</string>
+    <string name="warehouse_control_confirmation_sync_message">Essa ação irá apagar todos os itens salvos no seu banco de dados local e fazer o download de todos os itens pré cadastrados.</string>
+    <string name="warehouse_control_confirmation_sync_success_message">Sincronização realizada com sucesso</string>
+    <string name="warehouse_control_confirmation_sync_error_message">Ocorreu um erro ao sincronizar os dados. Tente novamente mais tarde.</string>
+</resources>
