@@ -27,7 +27,7 @@ internal fun isNetworkAvailable(context: Context): Boolean {
             activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
 }
 
-internal fun CharSequence.unaccent(): String {
-    val temp = Normalizer.normalize(this, Normalizer.Form.NFD)
+internal fun String.unaccent(): String {
+    val temp = Normalizer.normalize(this.lowercase(), Normalizer.Form.NFD)
     return "\\p{InCombiningDiacriticalMarks}+".toRegex().replace(temp, "")
 }

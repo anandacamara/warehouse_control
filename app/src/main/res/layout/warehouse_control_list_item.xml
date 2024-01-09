@@ -14,13 +14,6 @@
         android:layout_alignParentStart="true"
         android:src="@drawable/warehouse_control_icon_tools"/>
 
-    <ImageView
-        android:layout_width="@dimen/dimen_56dp"
-        android:layout_height="@dimen/dimen_56dp"
-        android:layout_centerInParent="true"
-        android:layout_alignParentStart="true"
-        android:src="@drawable/warehouse_control_round_image"/>
-
     <TextView
         android:id="@+id/itemName"
         android:layout_width="wrap_content"

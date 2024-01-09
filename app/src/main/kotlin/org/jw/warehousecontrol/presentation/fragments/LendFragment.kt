@@ -65,6 +65,7 @@ internal class LendFragment : BaseFragment(), EmptyListNotificationDelegate,
         verifyEnableSaveButton()
         view.itemsEditText.dismissDropDown()
         view.volunteerEditText.dismissDropDown()
+        view.itemsEditText.setText(String())
     }
 
     override fun notifyEmptyList() = verifyEnableSaveButton()

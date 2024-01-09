@@ -2,12 +2,11 @@ package org.jw.warehousecontrol.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.database.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import org.jw.warehousecontrol.domain.model.ItemEntity
 import org.jw.warehousecontrol.domain.repository.BorrowedItemsRepository
+import org.jw.warehousecontrol.domain.repository.SavedItemsRepository
 import org.jw.warehousecontrol.presentation.model.ItemModel
 import org.jw.warehousecontrol.presentation.model.VolunteerModel
 import org.jw.warehousecontrol.presentation.model.state.VolunteerDetailState
@@ -19,9 +18,8 @@ import org.jw.warehousecontrol.presentation.model.toModel
  */
 internal class VolunteerDetailsViewModel(
     private val itemsRepository: BorrowedItemsRepository,
+    private val savedItemsRepository: SavedItemsRepository
 ): ViewModel() {
-    private val databaseRef: DatabaseReference =
-        FirebaseDatabase.getInstance().reference.child(ITEMS_DATABASE_REFERENCE)
 
     private val _stateFlow =
         MutableStateFlow<VolunteerDetailState>(VolunteerDetailState.None)
@@ -30,22 +28,9 @@ internal class VolunteerDetailsViewModel(
         get() = _stateFlow
 
     fun getRegisteredItems() = viewModelScope.launch {
-        databaseRef.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val items = mutableListOf<ItemModel>()
-
-                dataSnapshot.children.forEach {
-                    val entity = it.getValue(ItemEntity::class.java)
-                    entity?.let { item -> items.add(item.toModel()) }
-                }
-
-                _stateFlow.value = VolunteerDetailState.Success(items)
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                _stateFlow.value = VolunteerDetailState.Failure
-            }
-        })
+        val items = savedItemsRepository.getSavedItems()
+        _stateFlow.value = VolunteerDetailState.Success(items.map { it.toModel() })
+        _stateFlow.value = VolunteerDetailState.None
     }
 
     fun lendItem(item: ItemModel, volunteer: VolunteerModel) = viewModelScope.launch {

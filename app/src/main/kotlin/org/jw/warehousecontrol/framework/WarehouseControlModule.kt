@@ -30,7 +30,7 @@ fun createModule(context: Context) = module {
 
     viewModel { ListViewModel(get()) }
     viewModel { ItemDetailViewModel(get(), get()) }
-    viewModel { VolunteerDetailsViewModel(get()) }
+    viewModel { VolunteerDetailsViewModel(get(), get()) }
     viewModel { LendViewModel(get(), get()) }
     viewModel { ItemRegisterViewModel() }
     viewModel { MenuViewModel(get()) }

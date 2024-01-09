@@ -14,6 +14,7 @@ import org.jw.warehousecontrol.presentation.model.ItemModel
 import org.jw.warehousecontrol.presentation.model.VolunteerModel
 import org.jw.warehousecontrol.presentation.model.delegate.OnClickBorrowItemDelegate
 import org.jw.warehousecontrol.presentation.model.enums.TabTypeEnum
+import org.jw.warehousecontrol.presentation.util.unaccent
 
 /**
  * @author Ananda Camara
@@ -34,7 +35,9 @@ internal class BorrowItemArrayAdapter(
             val results = FilterResults()
 
             searchedItems = if (chars == null || chars.isBlank()) items
-            else items.filter { it.name.contains(chars.toString(), true) }
+            else items.filter {
+                it.name.unaccent().contains(chars.toString().unaccent(), true)
+            }
 
             results.values = searchedItems
             results.count = searchedItems.size
@@ -73,8 +76,8 @@ internal class BorrowItemArrayAdapter(
             val binding = WarehouseControlAddItemBinding.bind(view)
             binding.name.text = REGISTER_ITEM.format(searchedValue)
             binding.root.setOnClickListener {
-                val listItem = when(tabTypeEnum) {
-                    TabTypeEnum.VOLUNTEER -> VolunteerModel(name=  searchedValue)
+                val listItem = when (tabTypeEnum) {
+                    TabTypeEnum.VOLUNTEER -> VolunteerModel(name = searchedValue)
                     TabTypeEnum.ITEM -> ItemModel(name = searchedValue)
                 }
 
