@@ -8,6 +8,6 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 data class VolunteerDetailModel(
-    val volunteer: VolunteerModel,
-    val associatedItems: List<ItemModel>
+    val volunteer: UIItem,
+    val associatedItems: List<UIItemReference>
 ): Parcelable

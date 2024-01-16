@@ -16,7 +16,7 @@ internal data class BorrowedItemModel(
     @SerializedName("itemName") val itemName: String,
     @SerializedName("itemDescription") val itemDescription: String,
     @SerializedName("itemUrlImage") val itemUrlImage: String,
-    @SerializedName("volunteers") var volunteers: List<String>
+    @SerializedName("volunteers") var volunteers: List<BorrowedVolunteerModel>
 )
 
 internal fun ItemEntity.toBorrowedItemModel() = BorrowedItemModel(

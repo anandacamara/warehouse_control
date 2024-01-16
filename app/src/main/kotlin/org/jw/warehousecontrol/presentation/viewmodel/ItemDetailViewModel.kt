@@ -5,19 +5,19 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import org.jw.warehousecontrol.domain.repository.BorrowedItemsRepository
+import org.jw.warehousecontrol.domain.model.EntityReference
+import org.jw.warehousecontrol.domain.repository.LendItemsRepository
+import org.jw.warehousecontrol.domain.repository.ReturnItemRepository
 import org.jw.warehousecontrol.domain.repository.SavedItemsRepository
-import org.jw.warehousecontrol.presentation.model.ItemModel
-import org.jw.warehousecontrol.presentation.model.VolunteerModel
+import org.jw.warehousecontrol.presentation.model.*
 import org.jw.warehousecontrol.presentation.model.state.ItemDetailState
-import org.jw.warehousecontrol.presentation.model.toEntity
-import org.jw.warehousecontrol.presentation.model.toModel
 
 /**
  * @author Ananda Camara
  */
 internal class ItemDetailViewModel(
-    private val borrowedItemsRepository: BorrowedItemsRepository,
+    private val lendItemsRepository: LendItemsRepository,
+    private val returnItemRepository: ReturnItemRepository,
     private val savedItemsRepository: SavedItemsRepository
 ) : ViewModel() {
     private val _stateFlow =
@@ -28,18 +28,24 @@ internal class ItemDetailViewModel(
 
     fun getRegisteredVolunteers() = viewModelScope.launch {
         val volunteers = savedItemsRepository.getSavedVolunteers()
-        _stateFlow.value = ItemDetailState.Success(volunteers.map { it.toModel() })
+        _stateFlow.value = ItemDetailState.Success(volunteers.map { it.toUIItem() })
         _stateFlow.value = ItemDetailState.None
     }
 
-    fun lendItem(item: ItemModel, volunteer: VolunteerModel) = viewModelScope.launch {
-        borrowedItemsRepository.lendItems(item.toEntity(), to = volunteer.toEntity())
+    fun lendItem(item: UIItem, volunteer: UIItemReference) = viewModelScope.launch {
+        lendItemsRepository.lendItems(
+            EntityReference(item.toItemEntity(), volunteer.count),
+            to = volunteer.uiItem.toVolunteerEntity()
+        )
         _stateFlow.value = ItemDetailState.ShowSuccessMessage(LEND_ITEM_SUCCESS)
         _stateFlow.value = ItemDetailState.None
     }
 
-    fun returnItem(item: ItemModel, volunteer: VolunteerModel) = viewModelScope.launch {
-        borrowedItemsRepository.returnItem(item.toEntity(), volunteer.toEntity())
+    fun returnItem(item: UIItem, volunteer: UIItem) = viewModelScope.launch {
+        returnItemRepository.returnItem(
+            EntityReference(item.toItemEntity(), 1),
+            from = volunteer.toVolunteerEntity()
+        )
         _stateFlow.value = ItemDetailState.ShowSuccessMessage(RETURN_ITEM_SUCCESS)
         _stateFlow.value = ItemDetailState.None
     }

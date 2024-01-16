@@ -5,8 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.jw.warehousecontrol.R
-import org.jw.warehousecontrol.databinding.WarehouseControlListItemBinding
-import org.jw.warehousecontrol.presentation.model.ItemModel
+import org.jw.warehousecontrol.databinding.WarehouseControlBorrowListItemBinding
+import org.jw.warehousecontrol.presentation.model.UIItem
+import org.jw.warehousecontrol.presentation.model.UIItemReference
 import org.jw.warehousecontrol.presentation.model.delegate.EmptyListNotificationDelegate
 
 /**
@@ -15,11 +16,11 @@ import org.jw.warehousecontrol.presentation.model.delegate.EmptyListNotification
 internal class LendItemAdapter(
     private val delegate: EmptyListNotificationDelegate
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    val items = mutableListOf<ItemModel>()
+    val items = mutableListOf<UIItemReference>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.warehouse_control_list_item, parent, false)
+            .inflate(R.layout.warehouse_control_borrow_list_item, parent, false)
 
         return ItemViewHolder(view)
     }
@@ -30,21 +31,29 @@ internal class LendItemAdapter(
         with(holder as ItemViewHolder) {
             val item = items[position]
 
-            binding.icon.setImageResource(item.defaultResourceId)
-            holder.binding.itemName.text = item.name
-            holder.binding.closeButton.visibility = View.VISIBLE
+            binding.icon.setImageResource(item.uiItem.defaultResourceId)
+            binding.itemName.text = item.uiItem.name
+            binding.itemCount.text = ITEM_COUNT.format(item.count)
 
-            holder.binding.closeButton.setOnClickListener {
-                removeItem(position)
+            binding.minusButton.setOnClickListener {
+                decreaseItem(position)
                 if (items.isEmpty()) delegate.notifyEmptyList()
+            }
+
+            binding.plusButton.setOnClickListener {
+                increaseItem(position)
             }
         }
 
-    fun addItem(item: ItemModel) {
-        items.add(item)
-
-        notifyItemInserted(items.lastIndex)
-        notifyItemRangeChanged(items.lastIndex, items.size)
+    fun addItem(uiItem: UIItem) {
+        when(val index = items.indexOfFirst { it.uiItem.name == uiItem.name }) {
+            -1 -> {
+                items.add(UIItemReference(uiItem,  1))
+                notifyItemInserted(items.lastIndex)
+                notifyItemRangeChanged(items.lastIndex, items.size)
+            }
+            else -> increaseItem(index)
+        }
     }
 
     private fun removeItem(position: Int) {
@@ -54,7 +63,25 @@ internal class LendItemAdapter(
         notifyItemRangeChanged(position, items.size)
     }
 
+    private fun decreaseItem(position: Int) {
+        if (items[position].count == 1) removeItem(position)
+        else {
+            items[position].count--
+            notifyItemChanged(position)
+        }
+    }
+
+    private fun increaseItem(position: Int) {
+        items[position].count++
+
+        notifyItemChanged(position)
+    }
+
     inner class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val binding = WarehouseControlListItemBinding.bind(view)
+        val binding = WarehouseControlBorrowListItemBinding.bind(view)
+    }
+
+    companion object {
+        private const val ITEM_COUNT = "Quantidade: %s"
     }
 }

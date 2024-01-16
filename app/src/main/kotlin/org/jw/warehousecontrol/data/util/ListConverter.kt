@@ -3,22 +3,23 @@ package org.jw.warehousecontrol.data.util
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import org.jw.warehousecontrol.data.model.BorrowedVolunteerModel
 
 /**
  * @author Ananda Camara
  */
-class ListConverter {
+internal class ListConverter {
     @TypeConverter
-    fun toJsonString(list: List<String>): String {
+    fun toJsonString(list: List<BorrowedVolunteerModel>): String {
         val gson = Gson()
-        val type = object : TypeToken<List<String>>() {}.type
+        val type = object : TypeToken<List<BorrowedVolunteerModel>>() {}.type
         return gson.toJson(list, type)
     }
 
     @TypeConverter
-    fun fromJsonString(value: String): List<String> {
+    fun fromJsonString(value: String): List<BorrowedVolunteerModel> {
         val gson = Gson()
-        val type = object : TypeToken<List<String>>() {}.type
+        val type = object : TypeToken<List<BorrowedVolunteerModel>>() {}.type
         return gson.fromJson(value, type)
     }
 }

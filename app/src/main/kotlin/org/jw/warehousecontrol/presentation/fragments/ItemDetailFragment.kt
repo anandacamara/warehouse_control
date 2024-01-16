@@ -11,8 +11,8 @@ import kotlinx.coroutines.launch
 import org.jw.warehousecontrol.databinding.FragmentItemDetailBinding
 import org.jw.warehousecontrol.presentation.adapter.BorrowItemArrayAdapter
 import org.jw.warehousecontrol.presentation.adapter.BorrowedItemAdapter
-import org.jw.warehousecontrol.presentation.model.GenericListItem
-import org.jw.warehousecontrol.presentation.model.VolunteerModel
+import org.jw.warehousecontrol.presentation.model.UIItem
+import org.jw.warehousecontrol.presentation.model.UIItemReference
 import org.jw.warehousecontrol.presentation.model.enums.TabTypeEnum
 import org.jw.warehousecontrol.presentation.model.state.ItemDetailState
 import org.jw.warehousecontrol.presentation.util.doNothing
@@ -49,7 +49,6 @@ internal class ItemDetailFragment : BaseDetailManagementFragment() {
         getRegisteredVolunteers()
         setupViews()
         setupRecyclerViewAdapter()
-        setupAutocompleteAdapter()
         setupObservers()
     }
 
@@ -58,17 +57,18 @@ internal class ItemDetailFragment : BaseDetailManagementFragment() {
             showLoad()
             viewModel.returnItem(
                 args.detailItem.item,
-                recyclerViewAdapter.getItem(position) as VolunteerModel
+                recyclerViewAdapter.getItem(position).uiItem
             )
             recyclerViewAdapter.removeItem(position)
             updateAmountItemsView()
         }
     }
 
-    override fun onItemClick(item: GenericListItem) = with(item as VolunteerModel) {
+    override fun onItemClick(uiItem: UIItem, tabTypeEnum: TabTypeEnum) {
+        val reference = UIItemReference(uiItem)
         view.searchEditText.setText(EMPTY_STRING)
-        viewModel.lendItem(args.detailItem.item, item)
-        recyclerViewAdapter.addNewItem(item)
+        viewModel.lendItem(args.detailItem.item, reference)
+        recyclerViewAdapter.addNewItem(reference)
 
         updateAmountItemsView()
     }
@@ -83,18 +83,19 @@ internal class ItemDetailFragment : BaseDetailManagementFragment() {
     }
 
     private fun updateAmountItemsView() {
-        view.itemQuantity.text = BORROWED_AMOUNT.format(recyclerViewAdapter.itemCount)
+        view.itemQuantity.text =
+            BORROWED_AMOUNT.format(recyclerViewAdapter.allItemsCount)
     }
 
     private fun setupRecyclerViewAdapter() {
         view.recyclerView.adapter = recyclerViewAdapter
     }
 
-    private fun setupAutocompleteAdapter() = with(args.volunteers) {
+    private fun setupAutocompleteAdapter(volunteers: List<UIItem>) {
         searchAdapter = BorrowItemArrayAdapter(
             requireActivity(),
             this@ItemDetailFragment,
-            this.toMutableList(),
+            volunteers.toMutableList(),
             TabTypeEnum.VOLUNTEER
         )
         view.searchEditText.setAdapter(
@@ -109,7 +110,7 @@ internal class ItemDetailFragment : BaseDetailManagementFragment() {
     }
 
     private fun onStateChange(state: ItemDetailState) = when (state) {
-        is ItemDetailState.Success -> doNothing()
+        is ItemDetailState.Success -> setupAutocompleteAdapter(state.items)
         is ItemDetailState.ShowSuccessMessage -> showSnackbar(view.root, state.message)
         ItemDetailState.None -> doNothing()
     }.also {

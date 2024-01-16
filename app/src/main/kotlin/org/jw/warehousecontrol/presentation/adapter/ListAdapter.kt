@@ -7,9 +7,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.jw.warehousecontrol.R
 import org.jw.warehousecontrol.databinding.WarehouseControlListItemBinding
-import org.jw.warehousecontrol.presentation.model.GenericList
-import org.jw.warehousecontrol.presentation.model.ItemModel
-import org.jw.warehousecontrol.presentation.model.VolunteerModel
+import org.jw.warehousecontrol.presentation.model.UIItem
+import org.jw.warehousecontrol.presentation.model.UIList
 import org.jw.warehousecontrol.presentation.model.delegate.OnItemClickDelegate
 import org.jw.warehousecontrol.presentation.model.enums.TabTypeEnum
 import org.jw.warehousecontrol.presentation.util.unaccent
@@ -20,10 +19,10 @@ import org.jw.warehousecontrol.presentation.util.unaccent
 internal class ListAdapter(
     private val delegate: OnItemClickDelegate
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private var items: GenericList = GenericList(TabTypeEnum.ITEM, listOf())
+    private var uiList: UIList = UIList(TabTypeEnum.ITEM, listOf())
 
-    var itemsList: GenericList? = null
-    var volunteersList: GenericList? = null
+    var itemsList: UIList? = null
+    var volunteersList: UIList? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -32,30 +31,21 @@ internal class ListAdapter(
         return ItemViewHolder(view)
     }
 
-    override fun getItemCount(): Int = items.items.size
+    override fun getItemCount(): Int = uiList.items.size
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
         with(holder as ItemViewHolder) {
-            when (items.tabType) {
-                TabTypeEnum.ITEM -> {
-                    val item = items.items[position] as ItemModel
-                    holder.binding.icon.setImageResource(item.defaultResourceId)
-                    holder.binding.itemName.text = item.name
-                    holder.binding.root.setOnClickListener { delegate.onItemClick(item) }
-                }
-                TabTypeEnum.VOLUNTEER -> {
-                    val item = items.items[position] as VolunteerModel
-                    holder.binding.icon.setImageResource(item.defaultResourceId)
-                    holder.binding.itemName.text = item.name
-                    holder.binding.root.setOnClickListener { delegate.onVolunteerClick(item) }
-                }
-            }
+            val item = uiList.items[position]
+
+            holder.binding.icon.setImageResource(item.defaultResourceId)
+            holder.binding.itemName.text = item.name
+            holder.binding.root.setOnClickListener { delegate.onItemClick(item, uiList.tabType) }
         }
 
-    fun loadList(itemsList: List<ItemModel>, volunteersList: List<VolunteerModel>) {
-        this.itemsList = GenericList(TabTypeEnum.ITEM, itemsList.sortedBy { it.name })
+    fun loadList(itemsList: List<UIItem>, volunteersList: List<UIItem>) {
+        this.itemsList = UIList(TabTypeEnum.ITEM, itemsList.sortedBy { it.name })
         this.volunteersList =
-            GenericList(TabTypeEnum.VOLUNTEER, volunteersList.sortedBy { it.name })
+            UIList(TabTypeEnum.VOLUNTEER, volunteersList.sortedBy { it.name })
 
         loadItemsList()
     }
@@ -64,25 +54,25 @@ internal class ListAdapter(
 
     fun loadVolunteersList() = loadItems(this.volunteersList)
 
-    fun searchItems(searchText: String) = itemsList?.let { list ->
-        val searchedItems =
-            list.items.filter {
-                (it as ItemModel).name.unaccent().contains(searchText.unaccent(), true)
-            }
+    fun performSearch(searchText: String) {
+        val currentList = when (uiList.tabType) {
+            TabTypeEnum.VOLUNTEER -> volunteersList
+            TabTypeEnum.ITEM -> itemsList
+        }
 
-        loadItems(GenericList(TabTypeEnum.ITEM, searchedItems))
-    }
+        currentList?.items?.let { list ->
+            val searchedItems =
+                list.filter {
+                    it.name.unaccent().contains(searchText.unaccent(), true)
+                }
 
-    fun searchVolunteers(searchText: String) = volunteersList?.let { list ->
-        val searchedItems =
-            list.items.filter { (it as VolunteerModel).name.unaccent().contains(searchText.unaccent(), true) }
-
-        loadItems(GenericList(TabTypeEnum.VOLUNTEER, searchedItems))
+            loadItems(UIList(uiList.tabType, searchedItems))
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun loadItems(list: GenericList?) {
-        list?.let { this.items = it }
+    private fun loadItems(list: UIList?) {
+        list?.let { this.uiList = it }
         notifyDataSetChanged()
     }
 

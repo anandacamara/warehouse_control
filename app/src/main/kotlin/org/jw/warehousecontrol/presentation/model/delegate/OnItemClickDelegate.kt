@@ -1,12 +1,11 @@
 package org.jw.warehousecontrol.presentation.model.delegate
 
-import org.jw.warehousecontrol.presentation.model.ItemModel
-import org.jw.warehousecontrol.presentation.model.VolunteerModel
+import org.jw.warehousecontrol.presentation.model.UIItem
+import org.jw.warehousecontrol.presentation.model.enums.TabTypeEnum
 
 /**
  * @author Ananda Camara
  */
 interface OnItemClickDelegate {
-    fun onItemClick(item: ItemModel)
-    fun onVolunteerClick(volunteer: VolunteerModel)
+    fun onItemClick(uiItem: UIItem, type: TabTypeEnum)
 }

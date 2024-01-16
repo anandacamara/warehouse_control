@@ -25,3 +25,8 @@ internal fun VolunteerModel.toEntity() = VolunteerEntity(
     id = id,
     name = volunteerName
 )
+
+internal fun VolunteerEntity.toBorrowedVolunteerModel(count: Int) = BorrowedVolunteerModel(
+    name = name,
+    count = count
+)

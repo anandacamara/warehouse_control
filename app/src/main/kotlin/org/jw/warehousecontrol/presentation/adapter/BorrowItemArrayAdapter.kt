@@ -9,9 +9,7 @@ import android.widget.Filter
 import org.jw.warehousecontrol.R
 import org.jw.warehousecontrol.databinding.WarehouseControlAddItemBinding
 import org.jw.warehousecontrol.databinding.WarehouseControlListItemBinding
-import org.jw.warehousecontrol.presentation.model.GenericListItem
-import org.jw.warehousecontrol.presentation.model.ItemModel
-import org.jw.warehousecontrol.presentation.model.VolunteerModel
+import org.jw.warehousecontrol.presentation.model.UIItem
 import org.jw.warehousecontrol.presentation.model.delegate.OnClickBorrowItemDelegate
 import org.jw.warehousecontrol.presentation.model.enums.TabTypeEnum
 import org.jw.warehousecontrol.presentation.util.unaccent
@@ -22,10 +20,11 @@ import org.jw.warehousecontrol.presentation.util.unaccent
 internal class BorrowItemArrayAdapter(
     context: Context,
     val delegate: OnClickBorrowItemDelegate,
-    private val items: MutableList<GenericListItem>,
+    private val items: MutableList<UIItem>,
     private val tabTypeEnum: TabTypeEnum
-) : ArrayAdapter<GenericListItem>(context, R.layout.warehouse_control_list_item, items) {
-    private var searchedItems: List<GenericListItem> = items
+) : ArrayAdapter<UIItem>(context, R.layout.warehouse_control_list_item, items) {
+
+    private var searchedItems: List<UIItem> = items
     private var searchedValue: String = EMPTY_STRING
 
     override fun getFilter(): Filter = filter
@@ -47,6 +46,7 @@ internal class BorrowItemArrayAdapter(
 
         override fun publishResults(chars: CharSequence?, results: FilterResults?) {
             chars?.let { searchedValue = it.toString() }
+
             notifyDataSetChanged()
         }
     }
@@ -57,7 +57,7 @@ internal class BorrowItemArrayAdapter(
         else -> 0
     }
 
-    override fun getItem(position: Int): GenericListItem? = searchedItems.getOrNull(position)
+    override fun getItem(position: Int): UIItem? = searchedItems.getOrNull(position)
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View =
         createViewFromResource(position, parent)
@@ -76,13 +76,14 @@ internal class BorrowItemArrayAdapter(
             val binding = WarehouseControlAddItemBinding.bind(view)
             binding.name.text = REGISTER_ITEM.format(searchedValue)
             binding.root.setOnClickListener {
-                val listItem = when (tabTypeEnum) {
-                    TabTypeEnum.VOLUNTEER -> VolunteerModel(name = searchedValue)
-                    TabTypeEnum.ITEM -> ItemModel(name = searchedValue)
+                val resourceId = when (tabTypeEnum) {
+                    TabTypeEnum.VOLUNTEER -> R.drawable.warehouse_control_icon_volunteer
+                    TabTypeEnum.ITEM -> R.drawable.warehouse_control_icon_tools
                 }
 
-                addItem(listItem)
-                delegate.onItemClick(listItem)
+                val uiItem = UIItem(name = searchedValue, resourceId, null)
+                addItem(uiItem)
+                delegate.onItemClick(uiItem, tabTypeEnum)
             }
 
             return binding.root
@@ -91,16 +92,19 @@ internal class BorrowItemArrayAdapter(
         val view = LayoutInflater.from(context)
             .inflate(R.layout.warehouse_control_list_item, parent, false)
 
-        val item = searchedItems[position]
+        val item = searchedItems.getOrNull(position)
         val binding = WarehouseControlListItemBinding.bind(view)
-        binding.itemName.text = item.name
-        binding.root.setOnClickListener { delegate.onItemClick(item) }
-        binding.icon.setImageResource(item.defaultResourceId)
+
+        item?.let {
+            binding.itemName.text = it.name
+            binding.root.setOnClickListener { delegate.onItemClick(item, tabTypeEnum) }
+            binding.icon.setImageResource(it.defaultResourceId)
+        }
 
         return binding.root
     }
 
-    private fun addItem(item: GenericListItem) {
+    private fun addItem(item: UIItem) {
         items.add(item)
         notifyDataSetChanged()
     }

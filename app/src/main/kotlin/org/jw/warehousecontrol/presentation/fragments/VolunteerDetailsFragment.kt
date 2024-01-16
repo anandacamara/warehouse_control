@@ -11,8 +11,8 @@ import org.jw.warehousecontrol.R
 import org.jw.warehousecontrol.databinding.FragmentVolunteerDetailsBinding
 import org.jw.warehousecontrol.presentation.adapter.BorrowItemArrayAdapter
 import org.jw.warehousecontrol.presentation.adapter.BorrowedItemAdapter
-import org.jw.warehousecontrol.presentation.model.GenericListItem
-import org.jw.warehousecontrol.presentation.model.ItemModel
+import org.jw.warehousecontrol.presentation.model.UIItem
+import org.jw.warehousecontrol.presentation.model.UIItemReference
 import org.jw.warehousecontrol.presentation.model.enums.TabTypeEnum
 import org.jw.warehousecontrol.presentation.model.state.VolunteerDetailState
 import org.jw.warehousecontrol.presentation.util.doNothing
@@ -56,18 +56,20 @@ internal class VolunteerDetailsFragment : BaseDetailManagementFragment() {
         showConfirmationDialog(position) {
             showLoad()
             viewModel.returnItem(
-                recyclerViewAdapter.getItem(position) as ItemModel,
+                recyclerViewAdapter.getItem(position).uiItem,
                 args.detailVolunteer.volunteer
             )
             recyclerViewAdapter.removeItem(position)
         }
     }
 
-    override fun onItemClick(item: GenericListItem) = with(item as ItemModel) {
-        view.searchEditText.setText(EMPTY_STRING)
-        viewModel.lendItem(item, args.detailVolunteer.volunteer)
+    override fun onItemClick(uiItem: UIItem, tabTypeEnum: TabTypeEnum) {
+        val reference = UIItemReference(uiItem)
 
-        recyclerViewAdapter.addNewItem(item)
+        view.searchEditText.setText(EMPTY_STRING)
+        viewModel.lendItem(reference, args.detailVolunteer.volunteer)
+
+        recyclerViewAdapter.addNewItem(reference)
     }
 
     private fun getRegisteredItems() {
@@ -77,10 +79,6 @@ internal class VolunteerDetailsFragment : BaseDetailManagementFragment() {
 
     private fun setupViews() = with(args.detailVolunteer) {
         view.volunteerName.text = volunteer.name
-        volunteer.builderCode?.let {
-            view.volunteerBuilder.text = BUILDER_NUMBER.format(it)
-            view.volunteerBuilder.visibility = View.VISIBLE
-        }
     }
 
     private fun setupRecyclerViewAdapter() {
@@ -106,7 +104,7 @@ internal class VolunteerDetailsFragment : BaseDetailManagementFragment() {
         )
     }.also { hideLoad() }
 
-    private fun setupAutocompleteAdapter(items: List<ItemModel>) {
+    private fun setupAutocompleteAdapter(items: List<UIItem>) {
         searchAdapter = BorrowItemArrayAdapter(
             requireActivity(),
             this@VolunteerDetailsFragment,

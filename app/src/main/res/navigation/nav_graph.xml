@@ -41,9 +41,6 @@
         android:label="Detalhes do item"
         tools:layout="@layout/fragment_item_detail" >
         <argument
-            android:name="volunteers"
-            app:argType="org.jw.warehousecontrol.presentation.model.GenericListItem[]"/>
-        <argument
             android:name="detailItem"
             app:argType="org.jw.warehousecontrol.presentation.model.ItemDetailModel"/>
     </fragment>
@@ -72,9 +69,6 @@
         android:name="org.jw.warehousecontrol.presentation.fragments.VolunteerDetailsFragment"
         android:label="Detalhes do voluntário"
         tools:layout="@layout/fragment_volunteer_details" >
-        <argument
-            android:name="items"
-            app:argType="org.jw.warehousecontrol.presentation.model.GenericListItem[]"/>
         <argument
             android:name="detailVolunteer"
             app:argType="org.jw.warehousecontrol.presentation.model.VolunteerDetailModel"/>

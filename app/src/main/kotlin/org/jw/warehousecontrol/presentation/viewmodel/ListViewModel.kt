@@ -6,9 +6,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.jw.warehousecontrol.domain.repository.BorrowedItemsRepository
-import org.jw.warehousecontrol.presentation.model.ItemModel
-import org.jw.warehousecontrol.presentation.model.ListItemsModel
-import org.jw.warehousecontrol.presentation.model.VolunteerModel
+import org.jw.warehousecontrol.presentation.model.*
 import org.jw.warehousecontrol.presentation.model.state.ListItemsState
 import org.jw.warehousecontrol.presentation.model.toModel
 
@@ -19,7 +17,7 @@ internal class ListViewModel(
     private val repository: BorrowedItemsRepository
 ) : ViewModel() {
 
-    private var listItemsModel: ListItemsModel? = null
+    private var listItemsModel: BorrowedItemsModel? = null
 
     private val _stateFlow =
         MutableStateFlow<ListItemsState>(ListItemsState.None)
@@ -32,16 +30,16 @@ internal class ListViewModel(
         listItemsModel = items.toModel()
 
         _stateFlow.value = ListItemsState.GetListItemsSuccess(
-            itemsList = items.itemsDict.keys.map { it.toModel() },
-            volunteersList = items.volunteersDict.keys.map { it.toModel() }
+            itemsList = items.itemsDict.keys.map { it.toUIItem() },
+            volunteersList = items.volunteersDict.keys.map { it.toUIItem() }
         )
     }
 
-    fun getAssociatedVolunteers(item: ItemModel): List<VolunteerModel> {
-        return listItemsModel?.itemsDict?.get(item) ?: listOf()
+    fun getAssociatedVolunteers(uiItem: UIItem): List<UIItemReference> {
+        return listItemsModel?.itemsDict?.get(uiItem) ?: listOf()
     }
 
-    fun getAssociatedItems(volunteer: VolunteerModel): List<ItemModel> {
-        return listItemsModel?.volunteersDict?.get(volunteer) ?: listOf()
+    fun getAssociatedItems(uiItem: UIItem): List<UIItemReference> {
+        return listItemsModel?.volunteersDict?.get(uiItem) ?: listOf()
     }
 }

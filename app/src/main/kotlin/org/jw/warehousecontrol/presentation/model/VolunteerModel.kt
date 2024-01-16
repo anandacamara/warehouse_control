@@ -11,8 +11,9 @@ import org.jw.warehousecontrol.domain.model.VolunteerEntity
 @Parcelize
 data class VolunteerModel(
     override val name: String,
+    override var count: Int = 1,
     val builderCode: String? = null
-): Parcelable, GenericListItem(name, R.drawable.warehouse_control_icon_volunteer, null)
+) : Parcelable, GenericListItem(name, R.drawable.warehouse_control_icon_volunteer, null, count)
 
 internal fun VolunteerEntity.toModel() = VolunteerModel(
     name = name,

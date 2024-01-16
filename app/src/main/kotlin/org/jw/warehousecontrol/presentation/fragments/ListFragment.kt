@@ -13,13 +13,10 @@ import kotlinx.coroutines.launch
 import org.jw.warehousecontrol.R
 import org.jw.warehousecontrol.databinding.FragmentListBinding
 import org.jw.warehousecontrol.presentation.adapter.ListAdapter
-import org.jw.warehousecontrol.presentation.model.ItemDetailModel
-import org.jw.warehousecontrol.presentation.model.ItemModel
-import org.jw.warehousecontrol.presentation.model.VolunteerDetailModel
-import org.jw.warehousecontrol.presentation.model.VolunteerModel
+import org.jw.warehousecontrol.presentation.model.*
 import org.jw.warehousecontrol.presentation.model.delegate.OnItemClickDelegate
+import org.jw.warehousecontrol.presentation.model.enums.TabTypeEnum
 import org.jw.warehousecontrol.presentation.model.state.ListItemsState
-import org.jw.warehousecontrol.presentation.util.doNothing
 import org.jw.warehousecontrol.presentation.viewmodel.ListViewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
@@ -50,6 +47,20 @@ internal class ListFragment : BaseFragment(), OnItemClickDelegate {
         setupObservables()
     }
 
+    override fun onItemClick(uiItem: UIItem, type: TabTypeEnum) {
+        when (type) {
+            TabTypeEnum.ITEM -> {
+                val detailItem = ItemDetailModel(uiItem, viewModel.getAssociatedVolunteers(uiItem))
+                goToItemDetailFragment(detailItem)
+            }
+            TabTypeEnum.VOLUNTEER -> {
+                val detailVolunteer =
+                    VolunteerDetailModel(uiItem, viewModel.getAssociatedItems(uiItem))
+                goToVolunteerDetailFragment(detailVolunteer)
+            }
+        }
+    }
+
     private fun getItems() {
         showLoad()
         viewModel.getItems()
@@ -72,7 +83,7 @@ internal class ListFragment : BaseFragment(), OnItemClickDelegate {
         )
 
         view.searchEditText.doAfterTextChanged {
-            performSearchByTab(it.toString())
+            performSearch(it.toString())
         }
 
         view.newLendButton.setOnClickListener {
@@ -114,11 +125,7 @@ internal class ListFragment : BaseFragment(), OnItemClickDelegate {
             .show()
     }
 
-    private fun performSearchByTab(searchText: String) = when (view.tabLayout.selectedTabPosition) {
-        0 -> adapter.searchItems(searchText)
-        1 -> adapter.searchVolunteers(searchText)
-        else -> doNothing()
-    }
+    private fun performSearch(searchText: String) = adapter.performSearch(searchText)
 
     private fun changeSearchHint(resourceString: Int) =
         view.searchInputLayout.setHint(resourceString)
@@ -130,32 +137,15 @@ internal class ListFragment : BaseFragment(), OnItemClickDelegate {
 
     private fun goToItemDetailFragment(detailItem: ItemDetailModel) =
         adapter.volunteersList?.items?.let {
-            val action = ListFragmentDirections.goToItemDetailsFragment(
-                it.toTypedArray(),
-                detailItem
-            )
+            val action = ListFragmentDirections.goToItemDetailsFragment(detailItem)
             findNavController().navigate(action)
         }
 
     private fun goToVolunteerDetailFragment(detailVolunteer: VolunteerDetailModel) =
         adapter.itemsList?.items?.let {
-            val action = ListFragmentDirections.goToVolunteerDetailsFragment(
-                it.toTypedArray(),
-                detailVolunteer
-            )
+            val action = ListFragmentDirections.goToVolunteerDetailsFragment(detailVolunteer)
             findNavController().navigate(action)
         }
-
-    override fun onItemClick(item: ItemModel): Unit = with(viewModel) {
-        val detailItem = ItemDetailModel(item, getAssociatedVolunteers(item))
-        goToItemDetailFragment(detailItem)
-    }
-
-    override fun onVolunteerClick(volunteer: VolunteerModel): Unit = with(viewModel) {
-        val detailVolunteer = VolunteerDetailModel(volunteer, getAssociatedItems(volunteer))
-        goToVolunteerDetailFragment(detailVolunteer)
-    }
-
     companion object {
         private const val EMPTY_STRING = ""
     }

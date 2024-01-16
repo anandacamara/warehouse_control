@@ -8,7 +8,7 @@ import org.jw.warehousecontrol.presentation.model.enums.TabTypeEnum
  * @author Ananda Camara
  */
 @Parcelize
-internal data class GenericList(
+internal data class UIList(
     val tabType: TabTypeEnum,
-    val items: List<GenericListItem>
+    val items: List<UIItem>
 ): Parcelable

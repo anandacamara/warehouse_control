@@ -20,24 +20,12 @@
         android:layout_height="wrap_content"
         android:minHeight="@dimen/dimen_56dp"
         android:layout_centerInParent="true"
-        android:layout_toStartOf="@id/closeButton"
         android:layout_toEndOf="@id/icon"
         android:paddingHorizontal="@dimen/dimen_8dp"
         android:gravity="center_vertical"
         android:textColor="@color/warehouse_control_gray_dark"
         android:textSize="@dimen/dimen_18sp"
         tools:text="Martelo" />
-
-    <ImageView
-        android:id="@+id/closeButton"
-        android:layout_width="@dimen/dimen_56dp"
-        android:layout_height="@dimen/dimen_56dp"
-        android:padding="@dimen/dimen_8dp"
-        android:layout_centerInParent="true"
-        android:layout_alignParentEnd="true"
-        android:visibility="invisible"
-        tools:visibility="visible"
-        android:src="@drawable/warehouse_control_close_icon"/>
 
     <View
         android:layout_width="match_parent"

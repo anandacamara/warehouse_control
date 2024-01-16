@@ -10,9 +10,7 @@ import kotlinx.coroutines.launch
 import org.jw.warehousecontrol.databinding.FragmentLendBinding
 import org.jw.warehousecontrol.presentation.adapter.BorrowItemArrayAdapter
 import org.jw.warehousecontrol.presentation.adapter.LendItemAdapter
-import org.jw.warehousecontrol.presentation.model.GenericListItem
-import org.jw.warehousecontrol.presentation.model.ItemModel
-import org.jw.warehousecontrol.presentation.model.VolunteerModel
+import org.jw.warehousecontrol.presentation.model.UIItem
 import org.jw.warehousecontrol.presentation.model.delegate.EmptyListNotificationDelegate
 import org.jw.warehousecontrol.presentation.model.delegate.OnClickBorrowItemDelegate
 import org.jw.warehousecontrol.presentation.model.enums.TabTypeEnum
@@ -36,7 +34,7 @@ internal class LendFragment : BaseFragment(), EmptyListNotificationDelegate,
 
     private var listItemsAdapter: BorrowItemArrayAdapter? = null
 
-    private var selectedVolunteer: VolunteerModel? = null
+    private var selectedVolunteer: UIItem? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,11 +53,10 @@ internal class LendFragment : BaseFragment(), EmptyListNotificationDelegate,
         setupListeners()
     }
 
-    override fun onItemClick(item: GenericListItem) {
-        when (item) {
-            is ItemModel -> recyclerViewAdapter.addItem(item)
-            is VolunteerModel -> setVolunteer(item)
-            else -> doNothing()
+    override fun onItemClick(uiItem: UIItem, tabTypeEnum: TabTypeEnum) {
+        when (tabTypeEnum) {
+            TabTypeEnum.ITEM -> recyclerViewAdapter.addItem(uiItem)
+            TabTypeEnum.VOLUNTEER -> setVolunteer(uiItem)
         }
 
         verifyEnableSaveButton()
@@ -112,7 +109,7 @@ internal class LendFragment : BaseFragment(), EmptyListNotificationDelegate,
         return true
     }
 
-    private fun setupVolunteerAdapter(volunteers: List<VolunteerModel>) {
+    private fun setupVolunteerAdapter(volunteers: List<UIItem>) {
         listVolunteersAdapter =
             BorrowItemArrayAdapter(
                 requireContext(),
@@ -124,7 +121,7 @@ internal class LendFragment : BaseFragment(), EmptyListNotificationDelegate,
         view.volunteerEditText.setAdapter(listVolunteersAdapter)
     }
 
-    private fun setupItemsAdapter(items: List<ItemModel>) {
+    private fun setupItemsAdapter(items: List<UIItem>) {
         listItemsAdapter =
             BorrowItemArrayAdapter(
                 requireContext(),
@@ -140,8 +137,8 @@ internal class LendFragment : BaseFragment(), EmptyListNotificationDelegate,
         view.saveButton.isEnabled = areInputsFilled()
     }
 
-    private fun setVolunteer(volunteerModel: VolunteerModel) {
-        selectedVolunteer = volunteerModel
-        view.volunteerEditText.setText(volunteerModel.name)
+    private fun setVolunteer(uiItem: UIItem) {
+        selectedVolunteer = uiItem
+        view.volunteerEditText.setText(uiItem.name)
     }
 }
